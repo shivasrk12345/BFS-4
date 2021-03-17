@@ -1,0 +1,39 @@
+from collections import deque
+class Solution:
+    def updateBoard(self, board: List[List[str]], click: List[int]) -> List[List[str]]:
+        
+        #initialize rows and columns
+        nrows, ncols = len(board), len(board[0])
+        visited = [[False]*ncols for i in range(nrows)];
+        
+        #initialize queue
+        queue= deque();
+        queue.append(click);
+        visited[click[0]][click[1]] = True
+        while(queue):
+            x,y = queue.popleft();
+            if(board[x][y] == 'M'):
+                board[x][y] = 'X';
+                break;
+            countmine = 0;
+            # count the adjacentn mines for pos (x,y)
+            for dx,dy in [[0,1],[0,-1], [1,0], [-1,0], [-1, 1], [-1,-1],[1,-1],[1,1]]:
+                if(0 <= x+dx < nrows and 0<=y+dy < ncols ):
+                    if(board[x+dx][y+dy] == 'M'):
+                        countmine += 1;
+            # if the number of adjacent mines is zero, then change the value to 'B'
+            # and push all the boundaries into the queue
+            if(countmine == 0):
+                board[x][y] = 'B'          
+                for dx,dy in [[0,1],[0,-1], [1,0], [-1,0], [-1, 1], [-1,-1],[1,-1],[1,1]]:
+                    if(0 <= x+dx < nrows and 0<=y+dy < ncols and not visited[x+dx][y+dy]):        
+                        queue.append([x+dx, y+dy]);
+                        visited[x+dx][y+dy] = True;
+            else:
+                board[x][y] = str(countmine);
+        return board;
+            
+            
+                
+                    
+        
